@@ -3,7 +3,8 @@ const express = require("express");
 const app = express();
 const AppError = require("./utils/appError");
 const profiles = require("./api/profile/profile.router");
-
+const cors = require("cors")
+app.use(cors())
 app.use(express.json());
 app.use('/upload', express.static('upload/images'));
 app.use("/api/images", profiles);
