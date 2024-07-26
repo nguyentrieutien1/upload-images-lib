@@ -56,7 +56,7 @@
       const formData = new FormData();
       formData.append('image', file);
 
-      fetch('http://localhost:3000/api/images', { // Thay đổi URL endpoint theo server của bạn
+      fetch('https://1kview.cloud/api/images', { // Thay đổi URL endpoint theo server của bạn
         method: 'POST',
         body: formData
       })
