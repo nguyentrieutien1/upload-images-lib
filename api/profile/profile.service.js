@@ -1,14 +1,18 @@
 const pool = require("../../config/database");
 
 module.exports = {
-    find: async() => {
+    find: async () => {
         const connection = await pool.getConnection();
         try {
             await connection.beginTransaction();
+
+            const environment = process.env.NODE_ENV || 'development';
+            const basePath = environment === 'development' ? 'http://localhost:3000/upload/' : 'https://1kview.click/upload/';
+
             const fetchResult = await connection.query(
-                `SELECT id,first_name,last_name,address,contact_number,
-                CONCAT('http://192.168.8.140:3000/upload/',profile_picture) AS profile_picture
-                FROM profile`,
+                `SELECT 
+    CONCAT('${basePath}', profile_picture) AS profile_picture
+    FROM profile`
             );
             await connection.commit();
             return fetchResult[0];
@@ -18,24 +22,20 @@ module.exports = {
             connection.release();
         }
     },
-    create: async(data) => {
+    create: async (data) => {
         const connection = await pool.getConnection();
         try {
             await connection.beginTransaction();
             const queryResult = await connection.query(
                 `insert into profile
-                (first_name,last_name,address,contact_number,profile_picture)
-                values(?,?,?,?,?)`, [
-                    data.first_name,
-                    data.last_name,
-                    data.address,
-                    data.contact_number,
-                    data.profile_picture
-                ]
+                (profile_picture)
+                values(?)`, [
+                data.profile_picture
+            ]
             );
             const fetchResult = await connection.query(
-                `SELECT id,first_name,last_name,address,contact_number,
-                CONCAT('http://192.168.8.140:3000/upload/',profile_picture) AS profile_picture
+                `SELECT 
+                CONCAT('http://localhost:3000/upload/',profile_picture) AS image_url
                 FROM profile WHERE id = ?`, [queryResult[0].insertId]
             );
             await connection.commit();
