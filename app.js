@@ -8,6 +8,10 @@ app.use(express.json());
 app.use('/upload', express.static('upload/images'));
 app.use("/api/images", profiles);
 
+app.get("/", (req, res) => {
+    return res.json({ message: "Hello, site for upload image of 1kview.cloud" })
+})
+
 app.all('*', (req, res, next) => {
     throw new AppError(`Requested URL ${req.path} not found!`, 404);
 });
