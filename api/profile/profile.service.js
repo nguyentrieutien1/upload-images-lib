@@ -33,9 +33,12 @@ module.exports = {
                 data.profile_picture
             ]
             );
+            const environment = process.env.NODE_ENV || 'development';
+            const basePath = environment === 'development' ? 'http://localhost:3000/upload/' : 'https://1kview.click/upload/';
+            console.log(environment);
             const fetchResult = await connection.query(
                 `SELECT 
-                CONCAT('http://localhost:3000/upload/',profile_picture) AS image_url
+                CONCAT("${basePath}",profile_picture) AS image_url
                 FROM profile WHERE id = ?`, [queryResult[0].insertId]
             );
             await connection.commit();
